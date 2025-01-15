@@ -1,0 +1,13 @@
+Jon Ron: 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWFhMzEwNzFjNWEzMzJkMTA4MzJjMTkiLCJpYXQiOjE3MDU2NTI0ODcsImV4cCI6MTcwODI0NDQ4N30.jSChT3OSTjnpdruucKH5ixz7RDoZutLeuufFnrajbmc
+{
+    "email": "sus@gmail.com",
+    "fullName": "Jon Ron",
+    "password": "password01",
+    "phone": "07041712292",
+    "country": "Nigeria",
+    "currency": "USD"
+    
+  }
+
+

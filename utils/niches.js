@@ -1,0 +1,19 @@
+module.exports = [
+  "technology",
+  "wealth-building",
+  "fashion",
+  "education",
+  "gaming",
+  "home-decor",
+  "health-and-wellness",
+  "finance",
+  "food",
+  "gardening",
+  "beauty-and-cosmetics",
+  "art",
+  "travel",
+  "sports",
+  "luxury",
+  "pets",
+  ""
+];
