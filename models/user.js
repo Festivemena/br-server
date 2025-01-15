@@ -14,9 +14,9 @@ const UserSchema = new mongoose.Schema({
   },
   fullName: {
     type: String,
-   required: [true, "Please provide full name"],
+    required: [true, "Please provide full name"],
     trim: true,
-    // validate: /^[a-zA-Z]+ [a-zA-Z]+$/,
+    validate: /^[a-zA-Z]+ [a-zA-Z]+$/,
     maxlength: [35, "name cannot be more than 35 characters"],
   },
   accountPassword: {
