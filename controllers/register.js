@@ -7,7 +7,7 @@ const { CustomAPIError } = require("../errors/custom-error");
 
 const register = asyncWrapper(async (req, res) => {
   const {
-   fullName,
+    name: fullName,
     email,
     password,
     phone,
@@ -35,8 +35,8 @@ const register = asyncWrapper(async (req, res) => {
     );
   }
 
-  const fullNameRegex =  /^[a-zA-Z]+ [a-zA-Z]+$/;
-  if (!fullNameRegex.test(fullName)) {
+  const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
+  if (!fullNameRegex.test(fullName) || fullName.length > 35) {
     throw new CustomAPIError(
       "Invalid full name. It must be at least two names, not exceed 35 characters, and contain only letters.",
       400
@@ -58,14 +58,12 @@ const register = asyncWrapper(async (req, res) => {
   }
 
   const shortName = await countryShortName(country);
-  console.log(shortName);
 
   if (!shortName) {
     throw new CustomAPIError("Can't Validate Country", 400);
   }
 
   const isValidPhoneNumber = phoneNumberValidator(phone, shortName);
-  console.log(shortName);
   if (!isValidPhoneNumber) {
     throw new CustomAPIError(
       "Invalid Phone Number or Phone Number format",
