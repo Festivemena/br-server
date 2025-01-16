@@ -107,9 +107,9 @@ router.route("/verify-user").post(verifyUser);
 // ADMIN USE
 
 router.route("/get-all-users-data").get(getAllUsersData);
-// router.route("/get-all-users-data").get(isAdminMiddleware, getAllUsersData);
+ // router.route("/get-all-users-data").get(isAdminMiddleware, getAllUsersData);
 router.route("/delete-user-data/:id").delete(isAdminMiddleware, deleteUserData);
-// router.route("/delete-user-data/:id").delete(isAdminMiddleware, deleteUserData);
+//  router.route("/delete-user-data/:id").delete(isAdminMiddleware, deleteUserData);
 router.route("/advert-fee/:id").patch(isAdminMiddleware, modifyAdvertFee);
 router.route("/smartlink/:id").patch(isAdminMiddleware, modifySmartLink);
 router.route("/niche/:id").patch(isAdminMiddleware, modifyNiche);
@@ -117,7 +117,7 @@ router.route("/modify-user/:id").patch(isAdminMiddleware, modifyUserAdmin);
 router.route("/user-tx/:id").get(isAdminMiddleware, getUserTransactionAdmin);
 
 router.route("/admin-tx").get(isAdminMiddleware, getTransactionAdmin);
-// router.route("/modify-tx").patch(isAdminMiddleware, modifyTransactionAdmin);
+ // router.route("/modify-tx").patch(isAdminMiddleware, modifyTransactionAdmin);
 router
   .route("/modify-withdrawal-checklist")
   .patch(isAdminMiddleware, modifyWithdrawalChecklist);
