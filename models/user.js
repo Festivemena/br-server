@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
   },
   fullName: {
     type: String,
-    required: [true, "Please provide full name"],
+   required: [true, "Please provide full name"],
     trim: true,
     validate: /^[a-zA-Z]+ [a-zA-Z]+$/,
     maxlength: [35, "name cannot be more than 35 characters"],
@@ -81,6 +81,7 @@ const UserSchema = new mongoose.Schema({
   },
   accountAdvertAmount: { type: Number, default: 0 },
   accountBalance: { type: Number, default: 0 },
+  commissionFee: { type: Number, default: 0 },
   accountAffiliateBalance: { type: Number, default: 0 },
   accountAffiliateCapital: { type: Number, default: 0 },
   accountAffiliateEquity: { type: Number, default: 0 },
