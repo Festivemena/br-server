@@ -11,7 +11,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     const user = await User.findById(req.userId);
 
     // if (userTransactionType == "Withdrawal" && user.accountBalance <= 0) {
-    if (userTransactionType == "Withdrawal" && txAmount > user.accountAffiliateBalance) {
+    if (userTransactionType == "Withdrawal" && user.accountBalance <= 0) {
         throw new CustomAPIError("Insufficient Account Balance", 400);
     }
     console.log(req.body);

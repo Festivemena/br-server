@@ -29,7 +29,7 @@ const TransactionSchema = new mongoose.Schema({
   },
   txType: {
     type: String,
-    enum: ["Withdrawal", "Deposit"],
+    enum: ["Withdrawal", "Deposit", "Commission"],
   },
   paymentFile: {
     type: String,
