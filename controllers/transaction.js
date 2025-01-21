@@ -10,7 +10,6 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
 
     const user = await User.findById(req.userId);
 
-    // if (userTransactionType == "Withdrawal" && user.accountBalance <= 0) {
     if (userTransactionType == "Withdrawal" && user.accountBalance <= 0) {
         throw new CustomAPIError("Insufficient Account Balance", 400);
     }
@@ -21,13 +20,12 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
         throw new CustomAPIError("Please upload a file", 400);
     }
 
-    if (userTransactionType == "Commission" && !req.file) {
-        throw new CustomAPIError("Please upload a file", 400);
+    if (userTransactionType == "Commission") {
+        console.log("Processing commission transaction...");
     }
 
     const filePath =
-        userTransactionType == "Deposit" ? req.file.path : "Withdrawal Request";
-        console.log(txMethod);
+        userTransactionType == "Deposit" ? req.file?.path : "Commission/Withdrawal";
 
     if (!["Withdrawal", "Commission", "Deposit"].includes(userTransactionType)) {
         throw new CustomAPIError("Invalid userTransactionType", 400);
@@ -35,7 +33,6 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
 
     if (!["Bitcoin", "BTC", "Ethereum", "ETH", "USDT", "Bank"].includes(txMethod)) {
         throw new CustomAPIError("Invalid txMethod", 400);
-        console.log(txMethod);
     }
 
     if (txAmount <= 0) {
@@ -49,7 +46,6 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
         paymentFile: filePath,
     });
 
-    //   console.log(newTransaction);
     newTransaction.userId = req.userId;
 
     await newTransaction.save();
@@ -61,7 +57,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     await user.save();
     res.status(200).json({
         msg: "Transaction Added",
-        plan: newTransaction,
+        transaction: newTransaction,
         success: true,
     });
 });
