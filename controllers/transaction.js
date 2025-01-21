@@ -24,7 +24,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     const filePath =
         userTransactionType == "Deposit" ? req.file.path : "Withdrawal Request";
 
-    if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
+    if (!["Withdrawal", "Commission", "Deposit"].includes(userTransactionType)) {
         throw new CustomAPIError("Invalid userTransactionType", 400);
     }
 
