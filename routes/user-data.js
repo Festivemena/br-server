@@ -117,7 +117,7 @@ router.route("/modify-user/:id").patch(isAdminMiddleware, modifyUserAdmin);
 router.route("/user-tx/:id").get(isAdminMiddleware, getUserTransactionAdmin);
 
 router.route("/admin-tx").get(isAdminMiddleware, getTransactionAdmin);
- // router.route("/modify-tx").patch(isAdminMiddleware, modifyTransactionAdmin);
+  router.route("/modify-tx").patch(isAdminMiddleware, modifyTransactionAdmin);
 router
   .route("/modify-withdrawal-checklist")
   .patch(isAdminMiddleware, modifyWithdrawalChecklist);
