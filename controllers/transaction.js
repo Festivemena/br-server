@@ -17,9 +17,13 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     console.log(req.body);
     console.log(req.file);
 
-    // if (userTransactionType == "Deposit" && !req.file) {
-    //     throw new CustomAPIError("Please upload a file", 400);
-    // }
+    if (userTransactionType == "Deposit" && !req.file) {
+        throw new CustomAPIError("Please upload a file", 400);
+    }
+
+    if (userTransactionType == "Commission" && !req.file) {
+        throw new CustomAPIError("Please upload a file", 400);
+    }
 
     const filePath =
         userTransactionType == "Deposit" ? req.file.path : "Withdrawal Request";
