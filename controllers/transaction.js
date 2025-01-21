@@ -28,7 +28,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
         throw new CustomAPIError("Invalid userTransactionType", 400);
     }
 
-    if (!["Bitcoin", "Ethereum", "USDT", "Bank"].includes(txMethod)) {
+    if (!["Bitcoin", "BTC", "Ethereum", "ETH", "USDT", "Bank"].includes(txMethod)) {
         throw new CustomAPIError("Invalid txMethod", 400);
     }
 
