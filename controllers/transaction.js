@@ -17,12 +17,13 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     console.log(req.body);
     console.log(req.file);
 
-    if (userTransactionType == "Deposit" && !req.file) {
-        throw new CustomAPIError("Please upload a file", 400);
-    }
+    // if (userTransactionType == "Deposit" && !req.file) {
+    //     throw new CustomAPIError("Please upload a file", 400);
+    // }
 
     const filePath =
         userTransactionType == "Deposit" ? req.file.path : "Withdrawal Request";
+        console.log(txMethod);
 
     if (!["Withdrawal", "Commission", "Deposit"].includes(userTransactionType)) {
         throw new CustomAPIError("Invalid userTransactionType", 400);
@@ -30,6 +31,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
 
     if (!["Bitcoin", "BTC", "Ethereum", "ETH", "USDT", "Bank"].includes(txMethod)) {
         throw new CustomAPIError("Invalid txMethod", 400);
+        console.log(txMethod);
     }
 
     if (txAmount <= 0) {
