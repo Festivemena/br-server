@@ -20,14 +20,10 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
         throw new CustomAPIError("Please upload a file", 400);
     }
 
-    if (userTransactionType == "Commission") {
-        console.log("Processing commission transaction...");
-    }
-
     const filePath =
-        userTransactionType == "Deposit" ? req.file?.path : "Commission/Withdrawal";
+        userTransactionType == "Deposit" ? req.file?.path : "Withdrawal";
 
-    if (!["Withdrawal", "Commission", "Deposit"].includes(userTransactionType)) {
+    if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
         throw new CustomAPIError("Invalid userTransactionType", 400);
     }
 
