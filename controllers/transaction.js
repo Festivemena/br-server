@@ -71,7 +71,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
         paymentFile: filePath,
     });
 
-    newTransaction.userId = req.userId;
+    newTransaction.user = req.userId;
 
     await newTransaction.save();
 
