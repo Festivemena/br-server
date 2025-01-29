@@ -35,14 +35,6 @@ const register = asyncWrapper(async (req, res) => {
     );
   }
 
-  const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
-  if (!fullNameRegex.test(fullName) || fullName.length > 35) {
-    throw new CustomAPIError(
-      "Invalid full name. It must be at least two names, not exceed 35 characters, and contain only letters.",
-      400
-    );
-  }
-
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 
   if (!emailRegex.test(email)) {
