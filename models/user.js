@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
   },
   fullName: {
     type: String,
-    trim: true,
+    trim: true
   },
   accountPassword: {
     type: String,
