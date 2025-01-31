@@ -1,6 +1,7 @@
 const User = require("../models/user");
+const asyncWrapper = require("../middleware/async");
 
-const updateAffiliateBalance = async (req, res) => {
+const updateAffiliateBalance = asyncWrapper(async (req, res) => {
   const { equity } = req.body; // Extract equity from request body
   const userId = req.user._id; // Assuming user ID is available in the request (e.g., from middleware)
 
@@ -27,6 +28,8 @@ const updateAffiliateBalance = async (req, res) => {
     console.error("Error updating affiliate balance:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-};
+});
 
-module.exports = updateAffiliateBalance;
+module.exports = {
+    updateAffiliateBalance,
+  };
