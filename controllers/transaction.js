@@ -6,9 +6,9 @@ const asyncWrapper = require("../middleware/async");
 
 const newUserTransaction = asyncWrapper(async (req, res) => {
     const { userTransactionType } = req.query;
-    const { txAmount, txMethod } = req.body;
+    const { txAmount, userId, txMethod } = req.body;
 
-    const user = await User.findById(req.userId);
+    const user = await User.findById(userId);
     if (!user) {
         throw new CustomAPIError("User not found", 404);
     }
