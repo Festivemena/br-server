@@ -5,55 +5,59 @@ const { CustomAPIError } = require("../errors/custom-error");
 const asyncWrapper = require("../middleware/async");
 
 const newUserTransaction = asyncWrapper(async (req, res) => {
-  const { userTransactionType } = req.query;
-  const { txAmount, txMethod } = req.body;
+    const { userTransactionType } = req.query;
+    const { txAmount, txMethod } = req.body;
 
-  const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId);
 
-  // Check for insufficient balance in case of withdrawal
-  if (userTransactionType == "Withdrawal" && txAmount > user.accountAffiliateBalance) {
-      throw new CustomAPIError("Insufficient Account Balance", 400);
-  }
+    // if (userTransactionType == "Withdrawal" && user.accountBalance <= 0) {
+    if (userTransactionType == "Withdrawal" && txAmount > user.accountAffiliateBalance) {
+        throw new CustomAPIError("Insufficient Account Balance", 400);
+    }
+    console.log(req.body);
+    console.log(req.file);
 
-  // Validate transaction type
-  if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
-      throw new CustomAPIError("Invalid userTransactionType", 400);
-  }
+    if (userTransactionType == "Deposit" && !req.file) {
+        throw new CustomAPIError("Please upload a file", 400);
+    }
 
-  // Validate transaction method
-  if (!["Bitcoin", "Ethereum", "USDT", "Bank"].includes(txMethod)) {
-      throw new CustomAPIError("Invalid txMethod", 400);
-  }
+    const filePath =
+        userTransactionType == "Deposit" ? req.file.path : "Withdrawal Request";
 
-  // Validate transaction amount
-  if (txAmount <= 0) {
-      throw new CustomAPIError("Amount must be more than zero", 400);
-  }
+    if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
+        throw new CustomAPIError("Invalid userTransactionType", 400);
+    }
 
-  // Create a new transaction
-  const newTransaction = new Transaction({
-      txAmount,
-      txMethod,
-      txType: userTransactionType,
-      paymentFile: null, // No file upload, so set to null or remove this field entirely
-      user: req.userId, // Ensure this matches the schema field name
-  });
+    if (!["Bitcoin", "Ethereum", "USDT", "Bank"].includes(txMethod)) {
+        throw new CustomAPIError("Invalid txMethod", 400);
+    }
 
-  await newTransaction.save();
+    if (txAmount <= 0) {
+        throw new CustomAPIError("Amount must be more than zero", 400);
+    }
 
-  const txId = newTransaction._id;
+    const newTransaction = new Transaction({
+        txAmount,
+        txMethod,
+        txType: userTransactionType,
+        paymentFile: filePath,
+    });
 
-  // Add transaction ID to the user's transaction history
-  user.userTransactions[userTransactionType].push(txId);
+    //   console.log(newTransaction);
+    newTransaction.userId = req.userId;
 
-  await user.save();
+    await newTransaction.save();
 
-  // Send response
-  res.status(200).json({
-      msg: "Transaction Added",
-      plan: newTransaction,
-      success: true,
-  });
+    const txId = newTransaction._id;
+
+    user.userTransactions[userTransactionType].push(txId);
+
+    await user.save();
+    res.status(200).json({
+        msg: "Transaction Added",
+        plan: newTransaction,
+        success: true,
+    });
 });
 
 module.exports = { newUserTransaction };
