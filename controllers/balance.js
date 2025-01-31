@@ -1,25 +1,24 @@
-const User = require("../models/user"); // Import the User model
+const User = require("../models/user");
 
-// Controller to update the accountAffiliateBalance
 const updateAffiliateBalance = async (req, res) => {
-  const { userId } = req.params; // Extract userId from request parameters
   const { equity } = req.body; // Extract equity from request body
+  const userId = req.user._id; // Assuming user ID is available in the request (e.g., from middleware)
 
   try {
-    // Find the user by userId
+    // Find the user by ID
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update the accountAffiliateBalance with the new equity value
+    // Update the affiliate balance
     user.accountAffiliateBalance = equity;
 
-    // Save the updated user document
+    // Save the updated user
     await user.save();
 
-    // Respond with success message and updated user data
+    // Respond with success message
     res.status(200).json({
       message: "Affiliate balance updated successfully",
       user,
@@ -30,4 +29,4 @@ const updateAffiliateBalance = async (req, res) => {
   }
 };
 
-module.exports = { updateAffiliateBalance };
+module.exports = updateAffiliateBalance;
