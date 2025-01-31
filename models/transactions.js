@@ -5,7 +5,7 @@ const { CustomAPIError } = require("../errors/custom-error");
 const TransactionSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // Reference to the User model
+    ref: "User", // Correctly referencing the User model
     required: [true, "Transaction must be linked to a user"],
   },
   txMethod: {
@@ -49,86 +49,41 @@ const TransactionSchema = new mongoose.Schema({
 });
 
 // Middleware to handle user field updates upon successful transactions
-TransactionSchema.virtual("userId")
-  .get(function () {
-    return this._userId;
-  })
-  .set(function (userId) {
-    this._userId = userId;
-  });
+TransactionSchema.pre("save", async function (next) {
+  try {
+    if (this.txType === "Deposit") {
+      return next();
+    }
 
-  TransactionSchema.pre("save", async function (next) {
-    try {
-      if (this.txType == "Deposit") {
-        return next();
+    if (!this.user) {
+      throw new CustomAPIError("User ID is missing", 400);
+    }
+
+    const user = await User.findById(this.user);
+    if (!user) {
+      throw new CustomAPIError("User not found", 404);
+    }
+
+    // Enforce required user conditions before allowing a non-deposit transaction
+    const requiredFields = [
+      { field: "isMarketingLandscapeIssue", message: "Marketing Landscape issue detected" },
+      { field: "isCommissionFeePaid", message: "Commission Fee not paid" },
+      { field: "isAccountUpgraded", message: "Your account is due for an upgrade" },
+      { field: "isAccountVerified", message: "Account not verified" },
+      { field: "isIMCPaid", message: "IMC - Investment Management Charges not paid" },
+      { field: "isAccountUpdated", message: "Your Account is due for update" },
+      { field: "isAMCPaid", message: "AMC - Account Maintenance Fee not paid" },
+      { field: "isSwitchTransferFeePaid", message: "Switch your equity to the account balance" },
+      { field: "isReflectionFeePaid", message: "Reflection Fee not paid" },
+      { field: "isDistributionFeePaid", message: "Distribution Fee not paid" },
+      { field: "isSpreadFeePaid", message: "Spread Fee not paid" },
+      { field: "isRecommitmentFeePaid", message: "Recommitment Fee not paid" },
+    ];
+
+    for (const { field, message } of requiredFields) {
+      if (!user[field]) {
+        throw new CustomAPIError(message, 400);
       }
-  
-      const userId = this.userId;
-      if (!userId) {
-        throw new CustomAPIError("User ID is missing", 400);
-      }
-  
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new CustomAPIError("User not found", 404);
-      }
-  
-      if (!user.isMarketingLandscapeIssue) {
-        throw new CustomAPIError("Marketing Landscape issue detected", 400);
-      }
-
-    if (!user.isCommissionFeePaid) {
-      throw new CustomAPIError("Commission Fee not paid", 400);
-    }
-
-    if (!user.isAccountUpgraded) {
-      throw new CustomAPIError(
-        "Your account is due for an upgrade",
-        400
-      );
-    }
-    if (!user.isAccountVerified) {
-      throw new CustomAPIError("Account not verified", 400);
-    }
-
-    if (!user.isIMCPaid) {
-      throw new CustomAPIError(
-        "IMC - Investment Management Charges not paid",
-        400
-      );
-    }
-
-    if (!user.isAccountUpdated) {
-      throw new CustomAPIError("your Account is due for update", 400);
-    }
-
-    if (!user.isAMCPaid) {
-      throw new CustomAPIError(
-        "AMC - Account Maintenance Fee not paid",
-        400
-      );
-    }
-
-    if (!user.isSwitchTransferFeePaid) {
-      throw new CustomAPIError(
-        "Switch your equity to the account balance",
-        400
-      );
-    }
-
-    if (!user.isReflectionFeePaid) {
-      throw new CustomAPIError("Reflection Fee not paid", 400);
-    }
-    if (!user.isDistributionFeePaid) {
-      throw new CustomAPIError("Distribution Fee not paid", 400);
-    }
-
-    if (!user.isSpreadFeePaid) {
-      throw new CustomAPIError("Spread Fee not paid", 400);
-    }
-
-    if (!user.isRecommitmentFeePaid) {
-      throw new CustomAPIError("Recommitment Fee not paid", 400);
     }
 
     next();
