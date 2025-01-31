@@ -1,50 +1,51 @@
-const User = require("../models/user");
-const Transaction = require("../models/transactions");
-
-const { CustomAPIError } = require("../errors/custom-error");
-const asyncWrapper = require("../middleware/async");
-
 const newUserTransaction = asyncWrapper(async (req, res) => {
-    const { userTransactionType } = req.query;
-    const { txAmount, txMethod } = req.body;
+  const { userTransactionType } = req.query;
+  const { txAmount, txMethod } = req.body;
 
-    const user = await User.findById(req.userId);
+  const user = await User.findById(req.userId);
 
-    if (userTransactionType == "Withdrawal" && txAmount > user.accountBalance) {
-        throw new CustomAPIError("Insufficient Account Balance", 400);
-    }
-    
-    if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
-        throw new CustomAPIError("Invalid userTransactionType", 400);
-    }
+  // Check for insufficient balance in case of withdrawal
+  if (userTransactionType == "Withdrawal" && txAmount > user.accountAffiliateBalance) {
+      throw new CustomAPIError("Insufficient Account Balance", 400);
+  }
 
-    if (!["Bitcoin", "Ethereum", "USDT", "Bank"].includes(txMethod)) {
-        throw new CustomAPIError("Invalid txMethod", 400);
-    }
+  // Validate transaction type
+  if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
+      throw new CustomAPIError("Invalid userTransactionType", 400);
+  }
 
-    if (txAmount <= 0) {
-        throw new CustomAPIError("Amount must be more than zero", 400);
-    }
+  // Validate transaction method
+  if (!["Bitcoin", "Ethereum", "USDT", "Bank"].includes(txMethod)) {
+      throw new CustomAPIError("Invalid txMethod", 400);
+  }
 
-    const newTransaction = new Transaction({
-        txAmount,
-        txMethod,
-        txType: userTransactionType
-    });
+  // Validate transaction amount
+  if (txAmount <= 0) {
+      throw new CustomAPIError("Amount must be more than zero", 400);
+  }
 
-    newTransaction.userId = req.userId;
+  // Create a new transaction
+  const newTransaction = new Transaction({
+      txAmount,
+      txMethod,
+      txType: userTransactionType,
+      paymentFile: null, // No file upload, so set to null or remove this field entirely
+      user: req.userId, // Ensure this matches the schema field name
+  });
 
-    await newTransaction.save();
+  await newTransaction.save();
 
-    const txId = newTransaction._id;
-    user.userTransactions[userTransactionType].push(txId);
+  const txId = newTransaction._id;
 
-    await user.save();
-    res.status(200).json({
-        msg: "Transaction Added",
-        plan: newTransaction,
-        success: true,
-    });
+  // Add transaction ID to the user's transaction history
+  user.userTransactions[userTransactionType].push(txId);
+
+  await user.save();
+
+  // Send response
+  res.status(200).json({
+      msg: "Transaction Added",
+      plan: newTransaction,
+      success: true,
+  });
 });
-
-module.exports = { newUserTransaction };
