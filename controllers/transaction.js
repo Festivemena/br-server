@@ -1,3 +1,9 @@
+const User = require("../models/user");
+const Transaction = require("../models/transactions");
+
+const { CustomAPIError } = require("../errors/custom-error");
+const asyncWrapper = require("../middleware/async");
+
 const newUserTransaction = asyncWrapper(async (req, res) => {
   const { userTransactionType } = req.query;
   const { txAmount, txMethod } = req.body;
@@ -49,3 +55,5 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
       success: true,
   });
 });
+
+module.exports = { newUserTransaction };
