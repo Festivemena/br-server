@@ -6,7 +6,7 @@ const asyncWrapper = require("../middleware/async");
 
 const newUserTransaction = asyncWrapper(async (req, res) => {
     const { userTransactionType } = req.query;
-    const { txAmount, userId, txMethod } = req.body;
+    const { txAmount, userId, file, txMethod } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
