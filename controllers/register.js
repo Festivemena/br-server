@@ -35,6 +35,7 @@ const register = asyncWrapper(async (req, res) => {
     );
   }
 
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 
   if (!emailRegex.test(email)) {

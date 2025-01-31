@@ -57,50 +57,25 @@ TransactionSchema.virtual("userId")
     this._userId = userId;
   });
 
-TransactionSchema.pre("save", async function (next) {
-  try {
-    if (this.txType == "Deposit") {
-      return next();
-    }
-    const userId = this.userId;
-
-    const user = await User.findById(userId);
-
-    // const plans = user.selectedPlans;
-
-    // const generatedEquity = [];
-
-    // for (const planName in plans) {
-    //   if (plans.hasOwnProperty(planName)) {
-    //     const planData = plans[planName];
-
-    //     if (Array.isArray(planData) && planData.length > 0) {
-    //       console.log(`Making requests for plan: ${planName}`);
-
-    //       // const promises = planData.map(async (item) => {
-    //       //   console.log(`  Fetching data for ${planName}: ${item}`);
-    //       //   const res = await fetchDataFromRoute(
-    //       //     `plans/${item}`,
-    //       //     "get",
-    //       //     null,
-    //       //     { planType: planName }
-    //       //   );
-    //       //   return Math.floor(res.planDetails.currentAmount);
-    //       // });
-
-    //       // const results = await Promise.all(promises);
-
-    //       // generatedEquity.push(...results);
-    //     }
-    //   }
-    // }
-
-    if (!user.isMarketingLandscapeIssue) {
-      throw new CustomAPIError(
-        "Marketing Landscape issue detected",
-        400
-      );
-    }
+  TransactionSchema.pre("save", async function (next) {
+    try {
+      if (this.txType == "Deposit") {
+        return next();
+      }
+  
+      const userId = this.userId;
+      if (!userId) {
+        throw new CustomAPIError("User ID is missing", 400);
+      }
+  
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new CustomAPIError("User not found", 404);
+      }
+  
+      if (!user.isMarketingLandscapeIssue) {
+        throw new CustomAPIError("Marketing Landscape issue detected", 400);
+      }
 
     if (!user.isCommissionFeePaid) {
       throw new CustomAPIError("Commission Fee not paid", 400);

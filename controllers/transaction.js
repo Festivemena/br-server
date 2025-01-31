@@ -10,53 +10,15 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
 
     const user = await User.findById(req.userId);
 
-    if (userTransactionType == "Withdrawal" && user.accountBalance <= 0) {
+    if (userTransactionType == "Withdrawal" && txAmount > user.accountBalance) {
         throw new CustomAPIError("Insufficient Account Balance", 400);
     }
-    console.log(req.body);
-    console.log(req.file);
-
-    if (userTransactionType == "Deposit" && !req.file) {
-        throw new CustomAPIError("Please upload a file", 400);
+    
+    if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
+        throw new CustomAPIError("Invalid userTransactionType", 400);
     }
 
-    const filePath =
-    [
-        "Deposit",
-        "Commission",
-        "AMC",
-        "IMC",
-        "Upgrade",
-        "Reflection",
-        "SwitchTransfer",
-        "Distribution",
-        "Spread",
-        "Recommitment"
-    ].includes(userTransactionType)
-        ? req.file?.path
-        : "Withdrawal";
-
-
-        if (
-            ![
-                "Withdrawal",
-                "Deposit",
-                "Commission",
-                "AMC",
-                "IMC",
-                "Upgrade",
-                "Reflection",
-                "SwitchTransfer",
-                "Distribution",
-                "Spread",
-                "Recommitment"
-            ].includes(userTransactionType)
-        ) {
-            throw new CustomAPIError("Invalid userTransactionType", 400);
-        }
-        
-
-    if (!["Bitcoin", "BTC", "Ethereum", "ETH", "USDT", "Bank"].includes(txMethod)) {
+    if (!["Bitcoin", "Ethereum", "USDT", "Bank"].includes(txMethod)) {
         throw new CustomAPIError("Invalid txMethod", 400);
     }
 
@@ -67,22 +29,20 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     const newTransaction = new Transaction({
         txAmount,
         txMethod,
-        txType: userTransactionType,
-        paymentFile: filePath,
+        txType: userTransactionType
     });
 
-    newTransaction.user = req.userId;
+    newTransaction.userId = req.userId;
 
     await newTransaction.save();
 
     const txId = newTransaction._id;
-
     user.userTransactions[userTransactionType].push(txId);
 
     await user.save();
     res.status(200).json({
         msg: "Transaction Added",
-        transaction: newTransaction,
+        plan: newTransaction,
         success: true,
     });
 });
