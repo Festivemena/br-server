@@ -11,6 +11,8 @@ const {
   getUserPlans,
 } = require("../controllers/user-data.js");
 
+const { updateAffiliateBalance } = require("../controllers/balance.js");
+
 const { register } = require("../controllers/register.js");
 const userLogin = require("../controllers/login.js");
 const getUserReferrals = require("../controllers/get-referrals");
@@ -86,6 +88,10 @@ router
   .get(isLoggedIn, getAllAddresses)
   .post(isAdminMiddleware, addAddress)
   .delete(isAdminMiddleware, deleteAddress);
+
+router
+  .route("/users/:userId/affiliate-balance")
+  .patch(isLoggedIn, updateAffiliateBalance);
 
 router
   .route("/plans/:id")
