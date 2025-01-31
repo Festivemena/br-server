@@ -90,7 +90,7 @@ router
   .delete(isAdminMiddleware, deleteAddress);
 
 router
-  .route("/users/:userId/affiliate-balance")
+  .route("/users/affiliate-balance")
   .patch(isLoggedIn, updateAffiliateBalance);
 
 router
