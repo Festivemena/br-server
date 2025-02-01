@@ -7,24 +7,29 @@ const asyncWrapper = require("../../middleware/async");
 // USERS
 
 const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
-  const { id } = req.query; // Assuming ID comes from URL parameters
-  const updateData = req.body; // The fields you want to update
+  const { txID, userID } = req.body; // Assuming txID and userID come from the request body
+  const { txStatus } = req.body; // The fields you want to update
 
-  console.log(id);
-  console.log(updateData);
+  console.log(txID);
+  console.log(userID);
+  console.log(txStatus);
 
-  // Check if ID and update data are provided
-  if (!id || !Object.keys(updateData).length) {
+  // Check if txID and txStatus are provided
+  if (!txID || !txStatus) {
     return res
       .status(400)
-      .json({ msg: "Transaction ID and update data are required" });
+      .json({ msg: "Transaction ID and status are required" });
   }
 
   // Perform the update operation
-  const transaction = await Transaction.findByIdAndUpdate(id, updateData, {
-    new: true, // Returns the modified document rather than the original
-    runValidators: true, // Ensures validations are run on the update operation
-  });
+  const transaction = await Transaction.findByIdAndUpdate(
+    txID,
+    { txStatus },
+    {
+      new: true, // Returns the modified document rather than the original
+      runValidators: true, // Ensures validations are run on the update operation
+    }
+  );
 
   // Check if the transaction was found and updated
   if (!transaction) {
