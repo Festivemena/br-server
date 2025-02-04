@@ -31,13 +31,13 @@ const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    if (txType.toLowerCase() === "deposit") {
+    if (txType.toLowerCase() === "deposit1") {
       // Add transaction amount to user's account balance
       user.accountBalance += transaction.txAmount;
     } else if (txType.toLowerCase() === "withdrawal") {
       // Ensure user has sufficient balance before deducting
-      if (user.accountBalance < transaction.txAmount) {
-        return res.status(400).json({ msg: "Insufficient account balance" });
+      if (user.accountAffiliateBalance < transaction.txAmount) {
+        return res.status(400).json({ msg: "Insufficient affiliate account balance" });
       }
       user.accountBalance -= transaction.txAmount;
     }
