@@ -20,7 +20,17 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
   }
 
   // Validate transaction type
-  if (!["Withdrawal", "Deposit"].includes(userTransactionType)) {
+  if (!["Withdrawal",
+      "Deposit",
+      "Commission",
+      "AMC",
+      "IMC",
+      "Upgrade",
+      "Reflection",
+      "SwitchTransfer",
+      "Distribution",
+      "Spread",
+      "Recommitment"].includes(userTransactionType)) {
     throw new CustomAPIError("Invalid userTransactionType", 400);
   }
 
