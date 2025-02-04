@@ -6,12 +6,12 @@ const asyncWrapper = require("../../middleware/async");
 // USERS
 
 const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
-  const { txID, userID, txStatus } = req.body; // Extract necessary fields from request body
+  const { txID, userID, txStatus, txType } = req.body; // Extract necessary fields from request body
 
-  console.log(txID, userID, txStatus);
+  console.log(txID, userID, txStatus, txType);
 
-  if (!txID || !txStatus) {
-    return res.status(400).json({ msg: "Transaction ID and status are required" });
+  if (!txID || !txStatus || !txType) {
+    return res.status(400).json({ msg: "Transaction ID, status, and type are required" });
   }
 
   // Find the transaction by ID
@@ -24,20 +24,24 @@ const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
   transaction.txStatus = txStatus;
   await transaction.save();
 
-  // If transaction is successful, debit the user's affiliate balance
+  // If transaction is successful, update the user's account balance accordingly
   if (txStatus.toLowerCase() === "successful") {
     const user = await User.findById(userID);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Ensure user has sufficient balance
-    if (user.affiliateBalance < transaction.txAmount) {
-      return res.status(400).json({ msg: "Insufficient affiliate balance" });
+    if (txType.toLowerCase() === "deposit") {
+      // Add transaction amount to user's account balance
+      user.accountBalance += transaction.txAmount;
+    } else if (txType.toLowerCase() === "withdrawal") {
+      // Ensure user has sufficient balance before deducting
+      if (user.accountBalance < transaction.txAmount) {
+        return res.status(400).json({ msg: "Insufficient account balance" });
+      }
+      user.accountBalance -= transaction.txAmount;
     }
 
-    // Deduct transaction amount from user's affiliate balance
-    user.affiliateBalance -= transaction.txAmount;
     await user.save();
   }
 
