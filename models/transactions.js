@@ -76,8 +76,7 @@ TransactionSchema.pre("save", async function (next) {
       { field: "isSwitchTransferFeePaid", message: "Switch your equity to the account balance" },
       { field: "isReflectionFeePaid", message: "Reflection Fee not paid" },
       { field: "isDistributionFeePaid", message: "Distribution Fee not paid" },
-      { field: "isSpreadFeePaid", message: "Spread Fee not paid" },
-      { field: "isRecommitmentFeePaid", message: "Recommitment Fee not paid" },
+      { field: "isSpreadFeePaid", message: "Spread Fee not paid" }
     ];
 
     for (const { field, message } of requiredFields) {
