@@ -15,8 +15,6 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     if (txAmount > user.accountAffiliateBalance) {
       throw new CustomAPIError("Insufficient Account Balance", 400);
     }
-    // Subtract amount from balance
-    user.accountAffiliateBalance -= txAmount;
   }
 
   // Validate transaction type
@@ -68,7 +66,6 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     msg: "Transaction Added",
     plan: newTransaction,
     success: true,
-    newBalance: user.accountAffiliateBalance, // Include updated balance in response
   });
 });
 
