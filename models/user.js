@@ -78,6 +78,8 @@ const UserSchema = new mongoose.Schema({
   },
   accountAdvertAmount: { type: Number, default: 0 },
   accountBalance: { type: Number, default: 0 },
+  balance: { type: Number, default: 0 },
+  pendingBalance: { type: Number, default: 0},
   commissionFee: { type: Number, default: 0 },
   upgradeFee: { type: Number, default: 0 },
   imcFee: { type: Number, default: 0 },
