@@ -47,6 +47,7 @@ const modifySmartLink = require("../controllers/admin/smartlink.js");
 const modifyNiche = require("../controllers/admin/niche.js");
 const modifyUserAdmin = require("../controllers/admin/modify-user.js");
 const getUserTransactionAdmin = require("../controllers/admin/get-user-transactions.js");
+const deleteTransactionAdmin = require("../controllers/admin/delete-transactions.js");
 const {
   getAllAddresses,
   addAddress,
@@ -66,6 +67,7 @@ router
   .patch(isLoggedIn, modifyUserData);
 router
   .route("/transactions")
+  .delete(isAdminMiddleware, deleteTransactionAdmin)
   .get(isLoggedIn, getTransactions)
   .post(isLoggedIn, upload.single("paymentFile"), newUserTransaction)
   .patch(isAdminMiddleware, modifyUserTransaction);
