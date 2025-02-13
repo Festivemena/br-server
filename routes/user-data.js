@@ -67,11 +67,12 @@ router
   .patch(isLoggedIn, modifyUserData);
 router
   .route("/transactions")
-  .delete(isAdminMiddleware, deleteTransactionAdmin)
   .get(isLoggedIn, getTransactions)
   .post(isLoggedIn, upload.single("paymentFile"), newUserTransaction)
   .patch(isAdminMiddleware, modifyUserTransaction);
-
+router
+.route("/tx/:id")
+.delete(isAdminMiddleware, deleteTransactionAdmin)
 router
   .route("/plans")
   .post(isLoggedIn, addNewPlan)
