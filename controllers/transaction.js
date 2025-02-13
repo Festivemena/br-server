@@ -77,8 +77,7 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
   if (userTransactionType === "Deposit") {
     user.pendingBalance += txAmount;
   } else if (userTransactionType === "Withdrawal") {
-    const newBalance = user.accountAffiliateBalance - txAmount;
-    user.balance = newBalance;
+    user.balance += txAmount; // ADDING amount to balance instead of subtracting from affiliate
   }
 
   await user.save();
