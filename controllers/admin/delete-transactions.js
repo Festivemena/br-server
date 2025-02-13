@@ -3,7 +3,7 @@ const { CustomAPIError } = require("../../errors/custom-error");
 const asyncWrapper = require("../../middleware/async");
 
 const deleteTransactionAdmin = asyncWrapper(async (req, res, next) => {
-  const { txID } = req.body; // Extract transaction ID from request body
+  const { txID } = req.params; // Extract transaction ID from request body
 
   if (!txID) {
     return res.status(400).json({ msg: "Transaction ID is required" });
