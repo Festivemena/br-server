@@ -34,15 +34,8 @@ const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
     if (txType.toLowerCase() === "deposit") {
       // Add transaction amount to user's account balance
       user.accountBalance += transaction.txAmount;
-    } else if (txType.toLowerCase() === "withdrawal") {
-      // Ensure user has sufficient balance before deducting
-      if (user.accountAffiliateBalance < transaction.txAmount) {
-        return res.status(400).json({ msg: "Insufficient affiliate account balance" });
-      }
-      user.accountBalance -= transaction.txAmount;
+      await user.save();
     }
-
-    await user.save();
   }
 
   res.status(200).json({ transaction });
