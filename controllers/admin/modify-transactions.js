@@ -30,16 +30,22 @@ const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
+
     if (txType.toLowerCase() === "deposit") {
-    try {
+      try {
+        // Add pending balance to account balance
         user.accountBalance = Number(user.accountBalance) + Number(user.pendingBalance);
+
+        // Reset pending balance to 0
+        user.pendingBalance = 0;
+
         await user.save();
         console.log("Deposit successful!");
-    } catch (error) {
+      } catch (error) {
         console.error("Error saving user data:", error);
+        return res.status(500).json({ msg: "Internal server error" });
+      }
     }
-}
-
   }
 
   res.status(200).json({ transaction });
