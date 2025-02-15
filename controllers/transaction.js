@@ -74,11 +74,15 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
   user.userTransactions[userTransactionType].push(txId);
 
   // Update user balance based on transaction type
-  if (userTransactionType === "Deposit") {
-    user.pendingBalance += txAmount;
-  } else if (userTransactionType === "Withdrawal") {
-    user.balance += txAmount; // ADDING amount to balance instead of subtracting from affiliate
-  }
+ if (userTransactionType === "Deposit") {
+    // Add transaction amount to pending balance
+    user.pendingBalance = Number(user.pendingBalance) + Number(txAmount);
+} else if (userTransactionType === "Withdrawal") {
+    // Ensure there are enough funds before withdrawing
+        user.balance = Number(user.balance) + Number(txAmount);
+    }
+}
+
 
   await user.save();
 
