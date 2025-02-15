@@ -33,7 +33,7 @@ const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
 
     if (txType.toLowerCase() === "deposit") {
       // Add transaction amount to user's account balance
-      user.accountBalance += transaction.txAmount;
+      user.accountBalance += user.pendingBalance;
       await user.save();
     }
   }
