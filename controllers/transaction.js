@@ -81,8 +81,6 @@ const newUserTransaction = asyncWrapper(async (req, res) => {
     // Ensure there are enough funds before withdrawing
         user.balance = Number(user.balance) + Number(txAmount);
     }
-}
-
 
   await user.save();
 
