@@ -30,12 +30,16 @@ const modifyTransactionAdmin = asyncWrapper(async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
-
     if (txType.toLowerCase() === "deposit") {
-      // Add transaction amount to user's account balance
-      user.accountBalance += user.pendingBalance;
-      await user.save();
+    try {
+        user.accountBalance = Number(user.accountBalance) + Number(user.pendingBalance);
+        await user.save();
+        console.log("Deposit successful!");
+    } catch (error) {
+        console.error("Error saving user data:", error);
     }
+}
+
   }
 
   res.status(200).json({ transaction });
